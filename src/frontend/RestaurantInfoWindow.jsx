@@ -1,10 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { InfoWindow } from '@react-google-maps/api';
 
-// Use environment variables for API configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-const API_PATH = import.meta.env.VITE_API_PATH || '/api';
-
 // Using memo to prevent unnecessary re-renders
 const RestaurantInfoWindow = memo(function RestaurantInfoWindow({ restaurant, position, onClose }) {
   // Get photo URL safely - using server proxy endpoint
@@ -16,7 +12,7 @@ const RestaurantInfoWindow = memo(function RestaurantInfoWindow({ restaurant, po
           return restaurant.photos[0].getUrl();
         } else if (restaurant.photos[0].photo_reference) {
           // Use our secure proxy endpoint instead of direct Google Maps URL
-          return `${API_BASE_URL}${API_PATH}/places/photo?maxwidth=400&photoreference=${
+          return `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_API_PATH}/places/photo?maxwidth=400&photoreference=${
             restaurant.photos[0].photo_reference
           }`;
         } else if (restaurant.photos[0].url) {
