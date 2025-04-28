@@ -89,19 +89,18 @@ const RestaurantInfoWindow = memo(function RestaurantInfoWindow({ restaurant, po
   }, [restaurant.opening_hours]);
 
   // Format price level
-// Format price level
-const priceLevel = useMemo(() => {
-  if (typeof restaurant.price_level !== 'number') return null;
-  
-  // Use string repeat method instead of array
-  const dollarString = '$'.repeat(restaurant.price_level);
-  
-  return (
-    <span className="text-green-700 font-semibold">
-      {dollarString}
-    </span>
-  );
-}, [restaurant.price_level]);
+  const priceLevel = useMemo(() => {
+    if (typeof restaurant.price_level !== 'number') return null;
+    
+    // Use string repeat method instead of array
+    const dollarString = '$'.repeat(restaurant.price_level);
+    
+    return (
+      <span className="text-green-700 font-semibold">
+        {dollarString}
+      </span>
+    );
+  }, [restaurant.price_level]);
 
   return (
     <InfoWindow position={position} onCloseClick={onClose}>
