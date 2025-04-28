@@ -1,7 +1,8 @@
 import React, { useState, useCallback, memo, useEffect } from 'react';
 
-// API base URL - use absolute URL
-const API_BASE_URL = 'http://localhost:5000';
+// Use environment variables for API configuration
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_PATH = import.meta.env.VITE_API_PATH || '/api';
 
 // Using memo to prevent unnecessary re-renders
 const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
@@ -18,7 +19,7 @@ const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
     // Check if server is available
     const checkServerHealth = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/health`);
+        const response = await fetch(`${API_BASE_URL}${API_PATH}/health`);
         if (response.ok) {
           setServerAvailable(true);
           // Now fetch the stats since server is available
@@ -36,7 +37,7 @@ const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
     // Fetch API stats from server
     const fetchStats = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/stats`);
+        const response = await fetch(`${API_BASE_URL}${API_PATH}/stats`);
         if (response.ok) {
           const data = await response.json();
           setApiStats(data.requestStats || { total: 0, limit: 50 });
@@ -63,7 +64,7 @@ const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/geocode?address=${encodeURIComponent(address)}`);
+      const response = await fetch(`${API_BASE_URL}${API_PATH}/geocode?address=${encodeURIComponent(address)}`);
       
       if (!response.ok) {
         let errorMessage = 'Error fetching address coordinates';
@@ -195,6 +196,11 @@ const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
         </div>
       )}
       
+      {/* Location data privacy notice */}
+      <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded mb-4 text-sm">
+        <p>Your location data will be used only to find a midpoint and nearby restaurants. We do not store your address information.</p>
+      </div>
+      
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="address1" className="block text-sm font-medium text-amber-800 mb-1">
@@ -208,6 +214,7 @@ const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
             value={address1}
             onChange={(e) => setAddress1(e.target.value)}
             disabled={isLoading}
+            aria-label="First address"
           />
         </div>
         <div>
@@ -222,6 +229,7 @@ const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
             value={address2}
             onChange={(e) => setAddress2(e.target.value)}
             disabled={isLoading}
+            aria-label="Second address"
           />
         </div>
         <button 

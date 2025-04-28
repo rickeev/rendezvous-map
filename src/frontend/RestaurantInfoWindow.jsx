@@ -1,21 +1,24 @@
 import React, { memo, useMemo } from 'react';
 import { InfoWindow } from '@react-google-maps/api';
 
+// Use environment variables for API configuration
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_PATH = import.meta.env.VITE_API_PATH || '/api';
+
 // Using memo to prevent unnecessary re-renders
 const RestaurantInfoWindow = memo(function RestaurantInfoWindow({ restaurant, position, onClose }) {
-  // Get photo URL safely
+  // Get photo URL safely - using server proxy endpoint
   const photoUrl = useMemo(() => {
     try {
-      if (restaurant.photos && 
-          restaurant.photos.length > 0) {
+      if (restaurant.photos && restaurant.photos.length > 0) {
         // Handle both function-style and direct URL
         if (typeof restaurant.photos[0].getUrl === 'function') {
           return restaurant.photos[0].getUrl();
         } else if (restaurant.photos[0].photo_reference) {
-          // Alternative approach if photo reference is available
-          return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${
+          // Use our secure proxy endpoint instead of direct Google Maps URL
+          return `${API_BASE_URL}${API_PATH}/places/photo?maxwidth=400&photoreference=${
             restaurant.photos[0].photo_reference
-          }&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`;
+          }`;
         } else if (restaurant.photos[0].url) {
           return restaurant.photos[0].url;
         }
@@ -86,20 +89,19 @@ const RestaurantInfoWindow = memo(function RestaurantInfoWindow({ restaurant, po
   }, [restaurant.opening_hours]);
 
   // Format price level
-  const priceLevel = useMemo(() => {
-    if (typeof restaurant.price_level !== 'number') return null;
-    
-    const dollars = [];
-    for (let i = 0; i < restaurant.price_level; i++) {
-      dollars.push('$');
-    }
-    
-    return (
-      <span className="text-green-700 font-semibold">
-        {dollars.join('')}
-      </span>
-    );
-  }, [restaurant.price_level]);
+// Format price level
+const priceLevel = useMemo(() => {
+  if (typeof restaurant.price_level !== 'number') return null;
+  
+  // Use string repeat method instead of array
+  const dollarString = '$'.repeat(restaurant.price_level);
+  
+  return (
+    <span className="text-green-700 font-semibold">
+      {dollarString}
+    </span>
+  );
+}, [restaurant.price_level]);
 
   return (
     <InfoWindow position={position} onCloseClick={onClose}>
