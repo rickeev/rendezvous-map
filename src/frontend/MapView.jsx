@@ -2,9 +2,6 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { GoogleMap, LoadScript, Marker, Circle } from '@react-google-maps/api';
 import RestaurantInfoWindow from './RestaurantInfoWindow';
 
-// API base URL - use absolute URL
-const API_BASE_URL = 'http://localhost:5000';
-
 // Define static values outside component to prevent re-creation
 const containerStyle = {
   width: '100%',
@@ -174,7 +171,7 @@ function MapView({ coords, onRestaurantsUpdate, selectedRestaurant, onRestaurant
   const fetchNearbyPlaces = useCallback(async (lat, lng, radius = ONE_MILE_IN_METERS) => {
     try {
       console.log(`Fetching places near ${lat},${lng} with radius ${radius}m`);
-      const response = await fetch(`${API_BASE_URL}/api/places/nearby?lat=${lat}&lng=${lng}&radius=${radius}&type=restaurant`);
+      const response = await fetch(`${VITE_API_BASE_URL}/api/places/nearby?lat=${lat}&lng=${lng}&radius=${radius}&type=restaurant`);
       
       if (!response.ok) {
         let errorMessage = 'Error fetching nearby places';
@@ -202,7 +199,7 @@ function MapView({ coords, onRestaurantsUpdate, selectedRestaurant, onRestaurant
   const fetchPlaceDetails = useCallback(async (placeId) => {
     try {
       console.log(`Fetching details for place ID: ${placeId}`);
-      const response = await fetch(`${API_BASE_URL}/api/places/details?placeid=${placeId}`);
+      const response = await fetch(`${VITE_API_BASE_URL}/api/places/details?placeid=${placeId}`);
       
       if (!response.ok) {
         let errorMessage = 'Error fetching place details';

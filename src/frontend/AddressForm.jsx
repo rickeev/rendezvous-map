@@ -1,8 +1,5 @@
 import React, { useState, useCallback, memo, useEffect } from 'react';
 
-// API base URL - use absolute URL
-const API_BASE_URL = 'http://localhost:5000';
-
 // Using memo to prevent unnecessary re-renders
 const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
   const [address1, setAddress1] = useState('');
@@ -18,7 +15,7 @@ const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
     // Check if server is available
     const checkServerHealth = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/health`);
+        const response = await fetch(`${VITE_API_BASE_URL}/api/health`);
         if (response.ok) {
           setServerAvailable(true);
           // Now fetch the stats since server is available
@@ -36,7 +33,7 @@ const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
     // Fetch API stats from server
     const fetchStats = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/stats`);
+        const response = await fetch(`${VITE_API_BASE_URL}/api/stats`);
         if (response.ok) {
           const data = await response.json();
           setApiStats(data.requestStats || { total: 0, limit: 50 });
@@ -63,7 +60,7 @@ const AddressForm = memo(function AddressForm({ onCoordsUpdate }) {
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/geocode?address=${encodeURIComponent(address)}`);
+      const response = await fetch(`${VITE_API_BASE_URL}/api/geocode?address=${encodeURIComponent(address)}`);
       
       if (!response.ok) {
         let errorMessage = 'Error fetching address coordinates';
